@@ -11,6 +11,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('name',)
     list_filter = ('email_verified',)
     search_fields = ('name', 'email')
+    list_display = ('email', 'name', 'is_staff', 'last_login')
     readonly_fields = ('skey', 'created_at', 'updated_at', 'last_login')
 
     def avatar(self, obj: User) -> str:

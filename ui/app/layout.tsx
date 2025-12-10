@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AISpatal",
+  title: "Aispatal",
   description: "An AI + Human powered hospital.",
 };
 

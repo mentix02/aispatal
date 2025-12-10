@@ -75,3 +75,57 @@ class User(AbstractUser):
 
     def get_full_name(self) -> str:
         return self.name
+
+
+class NextjsAccount(models.Model):
+
+    account_id = models.TextField()
+    provider_id = models.TextField()
+    user = models.ForeignKey('user.User', on_delete=models.DO_NOTHING)
+
+    id_token = models.TextField(blank=True, null=True)
+    access_token = models.TextField(blank=True, null=True)
+    refresh_token = models.TextField(blank=True, null=True)
+
+    access_token_expires_at = models.DateTimeField(blank=True, null=True)
+    refresh_token_expires_at = models.DateTimeField(blank=True, null=True)
+
+    scope = models.TextField(blank=True, null=True)
+    password = models.TextField(blank=True, null=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'nextjs_account'
+
+
+class NextjsSession(models.Model):
+
+    token = models.TextField()
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE)
+
+    expires_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    user_agent = models.TextField(blank=True, null=True, default=None)
+
+    # Don't be clever trying to use GenericIPAddressField - smarter men than you have tried and failed.
+    ip_address = models.TextField(null=True, blank=True, default=None)
+
+    class Meta:
+        db_table = 'nextjs_session'
+
+
+class NextjsVerification(models.Model):
+
+    value = models.TextField()
+    identifier = models.TextField()
+
+    expires_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'nextjs_verification'
