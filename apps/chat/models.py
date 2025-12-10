@@ -1,28 +1,20 @@
 import uuid
 
 from django.db import models
-from django.conf import settings
 
 
 class Chat(models.Model):
 
     timestamp = models.DateTimeField(auto_now_add=True)
     skey = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        default=None,
-        related_name='chats',
-        on_delete=models.SET_NULL,
-        help_text='User associated with the chat session',
-    )
+
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='chats')
 
     title = models.CharField(max_length=255, default='')
-    model = models.CharField(max_length=255, default='')
+    model = models.CharField(max_length=255, default='gpt-5-nano')
 
     def __str__(self) -> str:
-        return str(self.skey)
+        return self.title if self.title else str(self.skey)
 
 
 class Message(models.Model):

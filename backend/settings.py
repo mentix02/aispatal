@@ -2,7 +2,9 @@ from pathlib import Path
 
 import environ
 
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_FILE = BASE_DIR / '.env'
@@ -35,7 +37,8 @@ LOCAL_APPS = [
     'apps.qna.apps.QnaConfig',
     'apps.user.apps.UserConfig',
     'apps.chat.apps.ChatConfig',
-    'apps.document.apps.DocumentConfig',
+    'apps.vote.apps.VoteConfig',
+    'apps.article.apps.ArticleConfig',
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + LOCAL_APPS + ['django_cleanup']  # Ensure django_cleanup is last
@@ -70,10 +73,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db(),
 }
 
 STORAGES = {
@@ -98,6 +98,14 @@ AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
 
 AUTH_PASSWORD_VALIDATORS = []
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher',
+]
+
 AUTH_USER_MODEL = 'user.User'
 
 LANGUAGE_CODE = 'en-us'
@@ -110,3 +118,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'user.authentication.AccessTokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    )
+}
